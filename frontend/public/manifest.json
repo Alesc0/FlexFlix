@@ -1,0 +1,8 @@
+{
+    "short_name": "React App",
+    "name": "Frontend AI2 Ficha7",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+}
