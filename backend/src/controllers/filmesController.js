@@ -3,7 +3,15 @@ var filmes = require("../models/filmes");
 const Genero = require("../models/generos");
 
 controllers.list = async (req, res) => {
-  const data = await filmes.findAll({ include: [{ model: Genero }] });
+  const data = await filmes.findAll({
+    include: [{ model: Genero }],
+    raw: true,
+    mapToModel: true,
+    nest: true,
+  });
+
+  console.log("DATA =", data);
+
   res.json(data);
 };
 
@@ -25,9 +33,14 @@ controllers.detail = async (req, res) => {
   try {
     const data = await filmes.findByPk(req.params.id, {
       include: [{ model: Genero }],
+      raw: true,
+      mapToModel: true,
+      nest: true,
       attributes: ["idfilme", "descricao", "titulo", "foto"],
     });
 
+    console.log("DATA =", data);
+    
     res.status(200).send(data);
   } catch (err) {
     res.status(400).send(err);

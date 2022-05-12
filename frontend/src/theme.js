@@ -33,7 +33,7 @@ export default function ThemeProvider({ children }) {
       },
       background: {
         default: "#1B2021",
-        paper: "#282828",
+        paper: "#292f30",
         transparent: alpha("#F7F5FB", 0.0),
       },
       text: { primary: "#F4F6F8", secondary: "#C4CDD5", disabled: "#919EAB" },

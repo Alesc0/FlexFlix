@@ -5,6 +5,8 @@ import DefaultLayout from "./views/defaultLayout";
 // paginas
 import Filmes from "./views/filmes/filmes";
 import AddFilmes from "./views/filmes/addFilmes";
+import ListFilmes from "./views/filmes/listFilmes";
+import EditFilmes from "./views/filmes/editFilmes";
 
 // ----------------------------------------------------------------------
 
@@ -15,6 +17,8 @@ export default function Router() {
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<Filmes />} />
           <Route path="/add" element={<AddFilmes />} />
+          <Route path="/list" element={<ListFilmes />} />
+          <Route path="/edit/:id" element={<EditFilmes />} />
         </Route>
         <Route path="/imdb/:name" element={<IMDB />} />
       </Routes>

@@ -27,6 +27,7 @@ const style = {
 
 export default function InfoModal(props) {
   const { open, handleClose, data } = props;
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Card style={style}>
@@ -46,8 +47,7 @@ export default function InfoModal(props) {
               color="text.secondary"
               component="div"
             >
-              {/*TODO ERRO 
-              {data.genero.descricao || ""} */}
+              {data.genero ? data.genero.descricao : ""}
             </Typography>
             <Divider />
           </CardContent>
