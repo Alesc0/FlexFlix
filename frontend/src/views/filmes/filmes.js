@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import FilmeSlider from "../../components/filmes/filmeSlider/filmeSlider";
 import ImgSlider from "../../components/filmes/ImgSlider/imgSlider";
@@ -10,11 +10,6 @@ function Filmes() {
   const [generos, setGeneros] = useState([]);
   const [getMovie, setMovie] = useState({});
   const [loading, setLoading] = useState(false);
-  const [toggle, setToggle] = useState(false);
-
-  const refetch = () => {
-    setToggle((e) => !e);
-  };
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -36,7 +31,7 @@ function Filmes() {
       }
     };
     fetchData();
-  }, [setMovies, toggle]);
+  }, []);
   return loading ? (
     <Box
       sx={{

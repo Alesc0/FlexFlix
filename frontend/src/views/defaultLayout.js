@@ -1,12 +1,11 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { Button, Container } from "@mui/material";
+import { Button } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import InputBase from "@mui/material/InputBase";
-import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link, Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DefaultLayout() {
   return (
@@ -46,6 +45,7 @@ export default function DefaultLayout() {
         </AppBar>
       </Box>
       <Outlet />
+      <ToastContainer position="bottom-left" />
     </>
   );
 }

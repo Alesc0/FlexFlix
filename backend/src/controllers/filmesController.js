@@ -21,7 +21,7 @@ controllers.create = async (req, res) => {
       descricao: req.body.descricao,
       titulo: req.body.titulo,
       foto: req.body.foto,
-      genero: req.body.genero,
+      idgenero: req.body.idgenero,
     });
     res.status(200).send("OK");
   } catch (err) {
@@ -32,15 +32,13 @@ controllers.create = async (req, res) => {
 controllers.detail = async (req, res) => {
   try {
     const data = await filmes.findByPk(req.params.id, {
-      include: [{ model: Genero }],
       raw: true,
       mapToModel: true,
       nest: true,
-      attributes: ["idfilme", "descricao", "titulo", "foto"],
     });
 
     console.log("DATA =", data);
-    
+
     res.status(200).send(data);
   } catch (err) {
     res.status(400).send(err);

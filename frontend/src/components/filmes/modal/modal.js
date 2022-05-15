@@ -1,17 +1,8 @@
-import { useState } from "react";
+import { Card, CardContent, CardMedia, Divider } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Container,
-  Divider,
-} from "@mui/material";
+import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
 const style = {
@@ -21,8 +12,6 @@ const style = {
   transform: "translate(-50%, -50%)",
   bgcolor: "background.paper",
   display: "flex",
-  width: "600px",
-  height: "350px",
 };
 
 export default function InfoModal(props) {
@@ -33,11 +22,13 @@ export default function InfoModal(props) {
       <Card style={style}>
         <CardMedia
           component="img"
-          sx={{ width: 250 }}
+          sx={{ width: 300 }}
           image={data.foto || ""}
           alt={data.titulo || ""}
         />
-        <Box sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+        <Box
+          sx={{ display: "flex", flexGrow: 1, flexDirection: "column", p: 2 }}
+        >
           <CardContent sx={{ flex: "0 1 auto", p: 0 }}>
             <Typography component="div" variant="h5">
               {data.titulo || null}
