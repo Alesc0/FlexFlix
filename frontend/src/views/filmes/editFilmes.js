@@ -22,16 +22,19 @@ function EditFilmes() {
   const [generos, setGeneros] = useState([]);
   const [titulo, setTitulo] = useState("");
   const [errTitulo, setErrTitulo] = useState(false);
-  const [labelTitulo, setLabelTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [errDescricao, setErrDescricao] = useState(false);
-  const [labelDescricao, setLabelDescricao] = useState("");
   const [foto, setFoto] = useState("");
   const [errFoto, setErrFoto] = useState(false);
   const [genero, setGenero] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
   const { id } = useParams();
+
+  const errorList = {
+    titulo: "The title must be between 5 and 100 characters long.",
+    descricao: "The description must be between 5 and 250 characters long.",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +48,7 @@ function EditFilmes() {
         setGeneros(responseGeneros);
         setFields(responseFilme);
       } catch (error) {
-        console.log(error);
+        toast.error(error);
       }
       setLoading(false);
     };
@@ -67,57 +70,65 @@ function EditFilmes() {
     setErrDescricao(false);
     setErrFoto(false);
     setErrTitulo(false);
-    setLabelTitulo("");
-    setLabelDescricao("");
   };
 
-  async function handleSubmit(e) {
+  const validate = () => {
+    let isFormValid = true;
+
+    if (!titulo || titulo.length < 5 || titulo.length > 100) {
+      isFormValid = false;
+      setErrTitulo(true);
+    }
+    if (!descricao || descricao.length < 5 || descricao.length > 250) {
+      isFormValid = false;
+      setErrDescricao(true);
+    }
+    if (!foto) {
+      isFormValid = false;
+      setErrFoto(true);
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     setLoadingButton(true);
 
     e.preventDefault();
     clearErrors();
-    if (!titulo || titulo.length < 5 || titulo.length > 100) {
-      setErrTitulo(true);
-      setLabelTitulo("The title must be between 5 and 100 characters long.");
-    }
-    if (!descricao || descricao.length < 5 || descricao.length > 250) {
-      setErrDescricao(true);
-      setLabelDescricao(
-        "The description must be between 5 and 250 characters long."
-      );
-    }
-    if (!foto) setErrFoto(true);
 
-    if (errDescricao || errFoto || errTitulo) return;
+    if (validate()) {
+      let m = Object.assign({}, movie);
+      m.titulo = titulo;
+      m.descricao = descricao;
+      m.foto = foto;
+      m.idgenero = genero;
 
-    let m = Object.assign({}, movie);
-    m.titulo = titulo;
-    m.descricao = descricao;
-    m.foto = foto;
-    m.idgenero = genero;
+      if (JSON.stringify(m) === JSON.stringify(movie)) {
+        toast.info("You have to make changes in order to confirm!", {
+          toastId: "no-changes-id",
+        });
+        setLoadingButton(false);
+        return;
+      }
 
-    if (JSON.stringify(m) === JSON.stringify(movie)) {
-      toast.info("You have to make changes in order to confirm!", {
-        toastId: "no-changes-id",
-      });
-      setLoadingButton(false);
-      return;
-    }
-
-    try {
-      //requests
-      await axios.put("/filme/update/" + id, {
-        titulo: titulo.trim(),
-        descricao: descricao.trim(),
-        foto: foto.trim(),
-        idgenero: genero,
-      });
-      toast.success("Movie updated with success!");
-    } catch (error) {
-      toast.error(error);
+      try {
+        //requests
+        const data = await axios.put("/filme/update/" + id, {
+          titulo: titulo.trim(),
+          descricao: descricao.trim(),
+          foto: foto.trim(),
+          idgenero: genero,
+        });
+        toast.success(data.data);
+      } catch (error) {
+        for (const [key, value] of Object.entries(error.response.data)) {
+          toast.error(value, { toastId: key });
+        }
+      }
     }
     setLoadingButton(false);
-  }
+  };
   return loading ? (
     <Box
       sx={{
@@ -166,7 +177,7 @@ function EditFilmes() {
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
               error={errTitulo}
-              helperText={labelTitulo}
+              helperText={errTitulo ? errorList.titulo : ""}
             />
             <TextField
               id="txtDescription"
@@ -176,7 +187,7 @@ function EditFilmes() {
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               error={errDescricao}
-              helperText={labelDescricao}
+              helperText={errDescricao ? errorList.descricao : ""}
             />
             <TextField
               id="foto"
@@ -195,15 +206,11 @@ function EditFilmes() {
                   labelId="genre-select"
                   onChange={(e) => setGenero(e.target.value)}
                 >
-                  {generos.length > 0 ? (
-                    generos.map((row) => (
-                      <MenuItem key={row.idgenero} value={row.idgenero}>
-                        {row.descricao}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value={1}>{"Sem generos disponíveis!"}</MenuItem>
-                  )}
+                  {generos.map((row) => (
+                    <MenuItem key={row.idgenero} value={row.idgenero}>
+                      {row.descricao}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>

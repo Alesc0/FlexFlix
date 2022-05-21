@@ -8,6 +8,8 @@ router.post("/create", filmesController.create);
 router.delete("/delete/:id", filmesController.delete);
 router.put("/update/:id", filmesController.update);
 
+
+router.get("/filter/", filmesController.filter);
 router.get("/insertDefault", filmesController.insertDefault);
 
 module.exports = router;

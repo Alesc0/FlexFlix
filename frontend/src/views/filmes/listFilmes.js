@@ -2,6 +2,7 @@ import { Box, CircularProgress } from "@mui/material";
 import axios from "../../api/axios";
 import { useCallback, useEffect, useState } from "react";
 import EnhancedTable from "../../components/filmes/enhancedTable/enhancedTable";
+import { toast } from "react-toastify";
 
 export default function ListFilmes() {
   const [movies, setMovies] = useState([]);
@@ -21,31 +22,21 @@ export default function ListFilmes() {
         //set states
         setMovies(responseFilmes);
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
       setLoading(false);
     };
     fetchData();
-  }, [setMovies, refetch]);
-  return loading ? (
-    <Box
-      sx={{
-        height: "50vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <CircularProgress />
-    </Box>
-  ) : (
+  }, [setMovies, val]);
+
+  return (
     <Box sx={{ marginInline: 10, mt: 10 }}>
       <EnhancedTable
         data={movies}
-        loading={loading}
+        isLoading={loading}
         setLoading={setLoading}
         setMovies={setMovies}
+        refetch={refetch}
       />
     </Box>
   );

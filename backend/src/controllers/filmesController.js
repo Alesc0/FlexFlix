@@ -1,6 +1,38 @@
 const controllers = {};
+
+const { Op } = require("sequelize");
 var filmes = require("../models/filmes");
 const Genero = require("../models/generos");
+
+const errorList = {
+  titulo: "The title must be between 5 and 100 characters long!",
+  descricao: "The description must be between 5 and 250 characters long!",
+  foto: "The photo field is mandatory!",
+  genre: "The Genre field is mandaroty!",
+};
+
+const validateAll = (body) => {
+  let err = {};
+  if (Object.keys(body).length === 0) return (err.erro = "No data received!");
+
+  if (!body.titulo || body.titulo.length < 5 || body.titulo.length > 100) {
+    err.titulo = errorList.titulo;
+  }
+  if (
+    !body.descricao ||
+    body.descricao.length < 5 ||
+    body.descricao.length > 250
+  ) {
+    err.descricao = errorList.descricao;
+  }
+  if (!body.foto) {
+    err.foto = errorList.foto;
+  }
+  if (!body.idgenero) {
+    err.genre = errorList.genre;
+  }
+  return err;
+};
 
 controllers.list = async (req, res) => {
   const data = await filmes.findAll({
@@ -16,6 +48,8 @@ controllers.list = async (req, res) => {
 };
 
 controllers.create = async (req, res) => {
+  let err = validateAll(req.body);
+  if (Object.keys(err).length != 0) return res.status(400).send(err);
   try {
     await filmes.create({
       descricao: req.body.descricao,
@@ -23,7 +57,7 @@ controllers.create = async (req, res) => {
       foto: req.body.foto,
       idgenero: req.body.idgenero,
     });
-    res.status(200).send("OK");
+    res.status(200).send("Movie created with success!");
   } catch (err) {
     res.status(400).send(err);
   }
@@ -45,6 +79,38 @@ controllers.detail = async (req, res) => {
   }
 };
 
+controllers.filter = async (req, res) => {
+  if (!req.query) return;
+
+  try {
+    const data = await filmes.findAll({
+      where: {
+        ...(req.query.id && {
+          idfilme: req.query.id,
+        }),
+        ...(req.query.titulo && {
+          titulo: {
+            [Op.iLike]: "%" + req.query.titulo + "%",
+          },
+        }),
+        ...(req.query.descricao && {
+          descricao: {
+            [Op.iLike]: "%" + req.query.descricao + "%",
+          },
+        }),
+      },
+      include: [{ model: Genero }],
+      raw: true,
+      mapToModel: true,
+      nest: true,
+    });
+
+    res.status(200).send(data);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
 controllers.delete = async (req, res) => {
   try {
     await filmes.destroy({
@@ -52,12 +118,15 @@ controllers.delete = async (req, res) => {
         idfilme: req.params.id,
       },
     });
-    res.status(200).send("OK");
+    res.status(200).send("Movie deleted with success!");
   } catch {
     res.status(400).send(err);
   }
 };
 controllers.update = async (req, res) => {
+  let err = validateAll(req.body);
+  if (Object.keys(err).length != 0) return res.status(400).send(err);
+
   try {
     await filmes.update(req.body, {
       where: {
@@ -65,7 +134,7 @@ controllers.update = async (req, res) => {
       },
     });
 
-    res.status(200).send("OK");
+    res.status(200).send("Movie updated with success!");
   } catch {
     res.status(400).send(err);
   }

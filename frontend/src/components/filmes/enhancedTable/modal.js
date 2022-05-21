@@ -30,8 +30,8 @@ export default function InfoModal(props) {
           <Typography variant="h4">Delete</Typography>
           <Divider />
           <Typography variant="h5">
-            Are you sure you want to delete {data.length}
-            {data.length > 1 ? " movies" : " movie"}?
+            Are you sure you want to delete {data.length} movie
+            {data.length > 1 && "s"}?
           </Typography>
           <Typography color="error" variant="subtitle1">
             This action is not recommended as it can't be undone.

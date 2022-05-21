@@ -45,7 +45,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
 
-  const { data, refetch, isLoading, setLoading } = props;
+  const { data, refetch, isLoading, setLoading, setMovies } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -68,6 +68,7 @@ export default function EnhancedTable(props) {
     setSelected(i);
     setOpen(true);
   };
+
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -98,14 +99,14 @@ export default function EnhancedTable(props) {
   };
 
   const handleClose = () => setOpen(false);
-  const handleError = (error) => toast.error(error);
+  const handleError = (error) => toast.error(error.message);
 
   const handleClickModal = useCallback(async () => {
     handleClose();
 
     const sendDelete = async (id) => {
       try {
-        await axios.delete("filme/delete/" + id);
+        return await axios.delete("filme/delete/" + id);
       } catch (error) {
         handleError(error);
       }
@@ -128,7 +129,9 @@ export default function EnhancedTable(props) {
       } finally {
         setSelected([]);
         setLoading(false);
-        toast.success("A operação foi bem sucedida!");
+        promises.length > 1
+          ? toast.success("The movies have been deleted!")
+          : toast.success("The movie has been deleted!");
       }
     }
   }, [selected, refetch, setSelected, setLoading]);
@@ -144,11 +147,10 @@ export default function EnhancedTable(props) {
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
           setLoading={setLoading}
-          refetch={refetch}
-          setSelected={setSelected}
           selected={selected}
-          setOpen={setOpen}
           handleOpen={handleOpen}
+          setMovies={setMovies}
+          refetch={refetch}
         />
         <TableContainer>
           <Table

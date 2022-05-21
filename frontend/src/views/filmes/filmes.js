@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FilmeSlider from "../../components/filmes/filmeSlider/filmeSlider";
 import ImgSlider from "../../components/filmes/ImgSlider/imgSlider";
 import InfoModal from "../../components/filmes/modal/modal";
+import { toast } from "react-toastify";
 
 function Filmes() {
   const [movies, setMovies] = useState([]);
@@ -27,7 +28,7 @@ function Filmes() {
         setGeneros(responseGeneros);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     };
     fetchData();

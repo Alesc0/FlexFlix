@@ -74,7 +74,7 @@ function EditFilmes() {
     return isFormValid;
   };
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     setLoadingButton(true);
     e.preventDefault();
 
@@ -85,21 +85,24 @@ function EditFilmes() {
       m.descricao = descricao;
       m.foto = foto;
       m.idgenero = genero;
+
       try {
         //requests
-        axios.post("/filme/create", {
+        const data = await axios.post("/filme/create", {
           titulo: titulo.trim(),
           descricao: descricao.trim(),
           foto: foto.trim(),
           idgenero: genero,
         });
-        toast.success("Movie created with success!");
+        toast.success(data.data);
       } catch (error) {
-        toast.error(error);
+        for (const [key, value] of Object.entries(error.response.data)) {
+          toast.error(value, { toastId: key });
+        }
       }
     }
     setLoadingButton(false);
-  }
+  };
   return loading ? (
     <Box
       sx={{
@@ -149,6 +152,8 @@ function EditFilmes() {
               onChange={(e) => setTitulo(e.target.value)}
               error={errTitulo}
               helperText={errTitulo ? errorList.titulo : ""}
+              autoComplete="off"
+              autoFocus
             />
             <TextField
               id="txtDescription"
@@ -159,6 +164,7 @@ function EditFilmes() {
               onChange={(e) => setDescricao(e.target.value)}
               error={errDescricao}
               helperText={errDescricao ? errorList.descricao : ""}
+              autoComplete="off"
             />
             <TextField
               id="foto"
@@ -167,6 +173,7 @@ function EditFilmes() {
               value={foto}
               onChange={(e) => setFoto(e.target.value)}
               error={errFoto}
+              autoComplete="off"
             />
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               <FormControl>
@@ -177,15 +184,11 @@ function EditFilmes() {
                   labelId="genre-select"
                   onChange={(e) => setGenero(e.target.value)}
                 >
-                  {generos.length > 0 ? (
-                    generos.map((row) => (
-                      <MenuItem key={row.idgenero} value={row.idgenero}>
-                        {row.descricao}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value={1}>{"Sem generos disponíveis!"}</MenuItem>
-                  )}
+                  {generos.map((row) => (
+                    <MenuItem key={row.idgenero} value={row.idgenero}>
+                      {row.descricao}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>

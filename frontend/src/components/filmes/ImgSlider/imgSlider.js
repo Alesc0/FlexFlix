@@ -8,7 +8,7 @@ import {
   StepButton,
   Stepper,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const MyCollection = [
   {
@@ -28,17 +28,23 @@ const MyCollection = [
   },
 ];
 const transitionTime = 600;
-const delay = 2500;
+const delay = 500;
 export default function ImgSlider() {
   const [index, setStep] = useState([true, false, false]);
   const [isTransition, setTransition] = useState(false);
-  const timeoutRef = useRef(null);
   const theme = useTheme();
+
+  const timeoutRef = useRef(null);
 
   const activeStep = () => {
     return index.indexOf(true);
   };
-
+  const nextStep = () => {
+    let step = 0;
+    if (activeStep() === index.length - 1) step = 0;
+    else step = activeStep() + 1;
+    handleStep(step);
+  };
   const handleStep = (step) => () => {
     console.log("got here");
     setStep([]);
@@ -50,25 +56,6 @@ export default function ImgSlider() {
       setTransition(false);
     }, transitionTime);
   };
-  /*
-  function resetTimeout() {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-  }
-
-   useEffect(() => {
-    resetTimeout();
-    timeoutRef.current = setTimeout(
-      () =>
-        handleStep(activeStep() === index.length - 1 ? 1 : activeStep() + 1),
-      delay
-    );
-
-    return () => {
-      resetTimeout();
-    };
-  }, [index]); */
 
   return (
     <Box
@@ -113,14 +100,30 @@ export default function ImgSlider() {
       >
         <Box
           sx={{
+            display: "flex",
+            flexDirection: "row",
             m: 2,
             position: "absolute",
             bottom: 150,
-            left: 50,
             width: "100%",
           }}
         >
-          <Box sx={{ width: "fit-content" }}>
+          <Box sx={{ width: "fit-content", position: "relative", left: 50 }}>
+            <Stepper nonLinear activeStep={activeStep()}>
+              {MyCollection.map((row, index) => {
+                return (
+                  <Step sx={{ p: 1 }} key={row.label}>
+                    <StepButton
+                      color="grey"
+                      disabled={isTransition}
+                      onClick={handleStep(index)}
+                    />
+                  </Step>
+                );
+              })}
+            </Stepper>
+          </Box>
+          <Box sx={{ width: "fit-content", position: "relative", right: 0 }}>
             <Stepper nonLinear activeStep={activeStep()}>
               {MyCollection.map((row, index) => {
                 return (
