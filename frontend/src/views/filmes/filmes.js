@@ -48,26 +48,36 @@ function Filmes() {
   ) : (
     <>
       <ImgSlider />
-      {generos.map((row, i) =>
-        movies.filter((e) => e.genero.idgenero === row.idgenero).length !==
-        0 ? (
-          <Box
-            key={row.idgenero}
-            display="flex"
-            position="relative"
-            flexDirection="column"
-            sx={{ top: -100, pl: 5 }}
-          >
-            <Typography variant="h5">{row.descricao}</Typography>
-            <FilmeSlider
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          paddingInline: 5,
+          top: -60,
+        }}
+      >
+        {generos.map((row, i) =>
+          movies.filter((e) => e.genero.idgenero === row.idgenero).length !==
+          0 ? (
+            <Box
               key={row.idgenero}
-              handleOpen={handleOpen}
-              setMovie={setMovie}
-              data={movies.filter((e) => e.genero.idgenero === row.idgenero)}
-            />
-          </Box>
-        ) : null
-      )}
+              display="flex"
+              position="relative"
+              flexDirection="column"
+            >
+              <Typography variant="h5">{row.descricao}</Typography>
+              <FilmeSlider
+                key={row.idgenero}
+                handleOpen={handleOpen}
+                setMovie={setMovie}
+                data={movies.filter((e) => e.genero.idgenero === row.idgenero)}
+              />
+            </Box>
+          ) : null
+        )}
+      </Box>
       <InfoModal
         open={open}
         handleClose={handleClose}

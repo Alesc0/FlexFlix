@@ -7,6 +7,7 @@ import {
 } from "@mui/material/styles";
 import { alpha } from "@mui/material";
 import PropTypes from "prop-types";
+import darkScrollbar from "@mui/material/darkScrollbar";
 
 // ----------------------------------------------------------------------
 
@@ -36,9 +37,30 @@ export default function ThemeProvider({ children }) {
         paper: "#292f30",
         transparent: alpha("#F7F5FB", 0.0),
       },
+      action: {
+        main: "#919EAB",
+      },
       text: { primary: "#F4F6F8", secondary: "#C4CDD5", disabled: "#919EAB" },
     },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1300,
+        xl: 1536,
+      },
+    },
     shape: { borderRadius: 8 },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            ...darkScrollbar(),
+          },
+        },
+      },
+    },
   };
   const theme = createTheme(themeOptions);
 

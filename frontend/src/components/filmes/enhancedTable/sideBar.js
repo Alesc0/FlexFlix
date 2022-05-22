@@ -157,7 +157,7 @@ export default function SideBar(props) {
               type="submit"
               icon={<CircularProgress size={29} />}
             >
-              Pesquisar
+              Search
             </LoadingButton>
           </Box>
         </form>
