@@ -88,7 +88,7 @@ function EditFilmes() {
       setErrFoto(true);
     }
 
-    return true;
+    return isFormValid;
   };
 
   const handleSubmit = async (e) => {
@@ -146,7 +146,7 @@ function EditFilmes() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        mt: 20,
+        marginBlock: 15,
       }}
     >
       <img

@@ -6,7 +6,8 @@ export default function Footer() {
     <Box
       sx={{
         textAlign: "center",
-        p: 3,
+        p: 2,
+        pt: 0,
         bgcolor: "background.paper",
         mt: "auto",
       }}

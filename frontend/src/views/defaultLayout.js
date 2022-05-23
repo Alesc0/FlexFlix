@@ -34,7 +34,7 @@ export default function DefaultLayout() {
             >
               FlexFlix
             </Typography>
-            <Typography variant="h6">by Alesc0</Typography>
+            <Typography variant="h6">by Alex</Typography>
           </Toolbar>
         </AppBar>
       </Box>

@@ -188,6 +188,7 @@ export default function ImgSlider() {
             display="flex"
             sx={{
               width: "100%",
+              mt: 3,
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -210,7 +211,7 @@ export default function ImgSlider() {
             width: "100%",
             cursor: "pointer",
             borderBlock: `solid thin grey`,
-            mt: 20,
+            mt: 17,
           }}
           onMouseEnter={() => setRunning(false)}
           onMouseLeave={() => setRunning(true)}
