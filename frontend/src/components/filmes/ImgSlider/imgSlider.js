@@ -6,6 +6,7 @@ import {
   Button,
   Fade,
   IconButton,
+  Slide,
   Step,
   StepButton,
   StepLabel,
@@ -116,14 +117,7 @@ export default function ImgSlider() {
   };
 
   return (
-    <Box
-      position="relative"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      overflow="hidden"
-      sx={{ maxHeight: "50em" }}
-    >
+    <>
       {MyCollection.map((row, i) => (
         <Fade
           key={row.label}
@@ -138,7 +132,6 @@ export default function ImgSlider() {
               minWidth: "100%",
               minHeight: "100%",
               objectFit: "cover",
-              opacity: 0.4,
             }}
             src={row.imgPath}
             alt={"img" + i}
@@ -155,6 +148,17 @@ export default function ImgSlider() {
         sx={{
           background: `linear-gradient(to bottom, transparent 50%, 
           ${alpha(theme.palette.background.default, 1)}) `,
+        }}
+      />
+      <Box
+        position="absolute"
+        style={{
+          flexShrink: 0,
+          minWidth: "100%",
+          minHeight: "100%",
+        }}
+        sx={{
+          background: `${alpha(theme.palette.background.default, 0.6)}`,
         }}
       />
       <Box
@@ -254,6 +258,6 @@ export default function ImgSlider() {
           </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }

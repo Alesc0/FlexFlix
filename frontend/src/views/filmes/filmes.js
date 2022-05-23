@@ -47,7 +47,17 @@ function Filmes() {
     </Box>
   ) : (
     <>
-      <ImgSlider />
+      <Box
+        position="relative"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        overflow="hidden"
+        sx={{ maxHeight: "50em" }}
+      >
+        <ImgSlider />
+      </Box>
+
       <Box
         sx={{
           position: "relative",
