@@ -93,14 +93,12 @@ export default function ImgSlider() {
     let step = activeStep();
     step += 1;
     if (step === index.length) step = 0;
-    console.log(step);
     handleStep(step);
   };
   const prevStep = () => {
     let step = activeStep();
     step -= 1;
     if (step === -1) step = index.length - 1;
-    console.log(step);
     handleStep(step);
   };
 
@@ -174,7 +172,6 @@ export default function ImgSlider() {
             textAlign: "center",
             maxWidth: "400px",
             m: "0 auto",
-            mt: 10,
           }}
         >
           <Typography variant="h4" fontWeight="bolder">

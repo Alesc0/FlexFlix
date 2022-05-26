@@ -79,7 +79,6 @@ function Filmes() {
             >
               <Typography variant="h5">{row.descricao}</Typography>
               <FilmeSlider
-                key={row.idgenero}
                 handleOpen={handleOpen}
                 setMovie={setMovie}
                 data={movies.filter((e) => e.genero.idgenero === row.idgenero)}

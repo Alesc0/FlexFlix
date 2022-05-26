@@ -8,6 +8,8 @@ import {
   MenuItem,
   Paper,
   Select,
+  Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -15,7 +17,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "../../api/axios";
+import axios, { imagesUrl } from "../../api/axios";
 
 function EditFilmes() {
   const [movie, setMovie] = useState({});
@@ -26,6 +28,7 @@ function EditFilmes() {
   const [errDescricao, setErrDescricao] = useState(false);
   const [foto, setFoto] = useState("");
   const [errFoto, setErrFoto] = useState(false);
+  const [switchFoto, setSwitchFoto] = useState(false);
   const [genero, setGenero] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
@@ -91,6 +94,17 @@ function EditFilmes() {
     return isFormValid;
   };
 
+  const handleChange = (e) => {
+    setFoto("");
+    setSwitchFoto(e.target.checked);
+  };
+  const handleSetFoto = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+      setFoto(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     setLoadingButton(true);
 
@@ -98,7 +112,7 @@ function EditFilmes() {
     clearErrors();
 
     if (validate()) {
-      let m = Object.assign({}, movie);
+      let m = {};
       m.titulo = titulo;
       m.descricao = descricao;
       m.foto = foto;
@@ -114,12 +128,12 @@ function EditFilmes() {
 
       try {
         //requests
-        const data = await axios.put("/filme/update/" + id, {
-          titulo: titulo.trim(),
-          descricao: descricao.trim(),
-          foto: foto.trim(),
-          idgenero: genero,
-        });
+        const formData = new FormData();
+        formData.append(typeof foto === "string" ? "foto" : "file", foto);
+        formData.append("descricao", descricao.trim());
+        formData.append("titulo", titulo.trim());
+        formData.append("idgenero", genero);
+        const data = await axios.put("/filme/update/" + id, formData);
         toast.success(data.data);
       } catch (error) {
         for (const [key, value] of Object.entries(error.response.data)) {
@@ -147,17 +161,22 @@ function EditFilmes() {
         display: "flex",
         justifyContent: "center",
         marginBlock: 15,
+        height: "32em",
       }}
     >
       <img
         width={350}
-        style={{ borderRadius: "5px" }}
-        alt="Unavailable!"
+        style={{ borderRadius: "5px", display: switchFoto ? "none" : "" }}
+        alt="preview"
         src={foto}
+        onError={(event) => {
+          event.target.src = imagesUrl + "/notfoundImage.jpg";
+          event.onerror = null;
+        }}
       />
 
-      <Box sx={{ flexGrow: 1 }} maxWidth="sm">
-        <form onSubmit={handleSubmit}>
+      <Box sx={{ flex: 1 }} maxWidth="sm">
+        <form style={{ height: "100%" }} onSubmit={handleSubmit}>
           <Box
             sx={{
               display: "flex",
@@ -165,6 +184,7 @@ function EditFilmes() {
               gap: 2,
               p: 3,
               color: "text.primary",
+              height: "100%",
             }}
             component={Paper}
           >
@@ -189,14 +209,42 @@ function EditFilmes() {
               error={errDescricao}
               helperText={errDescricao ? errorList.descricao : ""}
             />
-            <TextField
-              id="foto"
-              label="Link to Photo"
-              variant="outlined"
-              value={foto}
-              onChange={(e) => setFoto(e.target.value)}
-              error={errFoto}
-            />
+            <Stack direction="row" spacing={2}>
+              <TextField
+                id="foto"
+                label="Link to Photo"
+                variant="outlined"
+                value={foto}
+                onChange={(e) => setFoto(e.target.value)}
+                error={errFoto}
+                autoComplete="off"
+                sx={{
+                  flex: 1,
+                  display: switchFoto ? "none" : "",
+                }}
+              />
+              <input
+                onChange={handleSetFoto}
+                type="file"
+                accept="image/*"
+                style={{
+                  flex: 1,
+                  display: switchFoto ? "" : "none",
+                }}
+              />
+              <Stack
+                direction="row"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                Link
+                <Switch value={switchFoto} onChange={handleChange} />
+                Foto
+              </Stack>
+            </Stack>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               <FormControl>
                 <InputLabel id="genre-select">Genre</InputLabel>

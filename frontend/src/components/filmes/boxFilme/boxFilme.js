@@ -1,4 +1,5 @@
 import { Box, Card, Typography, useTheme } from "@mui/material";
+import { imagesUrl } from "../../../api/axios";
 
 function BoxFilme({ data }) {
   const theme = useTheme();
@@ -13,9 +14,17 @@ function BoxFilme({ data }) {
       }}
     >
       <img
-        src={data.foto}
+        src={
+          data.foto.startsWith("https://")
+            ? data.foto
+            : `${imagesUrl}/${data.foto}`
+        }
         alt={data.titulo}
         style={{ objectFit: "cover" }}
+        onError={(event) => {
+          event.target.src = imagesUrl + "/notfoundImage.jpg";
+          event.onerror = null;
+        }}
       />
       <Box
         sx={{

@@ -71,7 +71,7 @@ export default function InfoModal(props) {
             </Box>
             <Box sx={{ ml: "auto" }}>
               <Button color="error" variant="contained" onClick={handleClose}>
-                Voltar
+                Back
               </Button>
             </Box>
           </Box>
