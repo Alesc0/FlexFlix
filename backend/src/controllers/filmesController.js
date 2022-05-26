@@ -1,8 +1,9 @@
-const controllers = {};
-
 const { Op } = require("sequelize");
 var filmes = require("../models/filmes");
 const Genero = require("../models/generos");
+var fs = require("fs");
+
+const controllers = {};
 
 const errorList = {
   titulo: "The title must be between 5 and 100 characters long!",
@@ -48,15 +49,19 @@ controllers.list = async (req, res) => {
 };
 
 controllers.create = async (req, res) => {
+  if (req.file) {
+    const path = req.file.path.split("\\").pop();
+    req.body.foto = path;
+  }
   let err = validateAll(req.body);
-  if (Object.keys(err).length != 0) return res.status(400).send(err);
+  if (Object.keys(err).length != 0) {
+    console.log("file deleted:", req.file.path);
+    fs.unlinkSync(req.file.path);
+    return res.status(400).send(err);
+  }
+
   try {
-    await filmes.create({
-      descricao: req.body.descricao,
-      titulo: req.body.titulo,
-      foto: req.body.foto,
-      idgenero: req.body.idgenero,
-    });
+    await filmes.create(req.body);
     res.status(200).send("Movie created with success!");
   } catch (err) {
     res.status(400).send(err);
@@ -123,9 +128,19 @@ controllers.delete = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
 controllers.update = async (req, res) => {
+  if (req.file) {
+    const path = req.file.path.split("\\").pop();
+    req.body.foto = path;
+  }
   let err = validateAll(req.body);
-  if (Object.keys(err).length != 0) return res.status(400).send(err);
+
+  if (Object.keys(err).length != 0) {
+    console.log("file deleted:", req.file.path);
+    fs.unlinkSync(req.file.path);
+    return res.status(400).send(err);
+  }
 
   try {
     await filmes.update(req.body, {
@@ -139,6 +154,7 @@ controllers.update = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
 controllers.insertDefault = async (req, res) => {
   try {
     await filmes.bulkCreate([

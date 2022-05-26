@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -16,6 +16,7 @@ require("./models/associations");
 app.set("port", process.env.port || 3000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.use("/genero", generosRoutes);
 app.use("/filme", filmesRoutes);
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
   return next();
 });
+
 app.listen(app.get("port"), () => {
   console.log("Servidor iniciado na porta: " + app.get("port"));
 });
