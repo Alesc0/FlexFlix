@@ -1,10 +1,16 @@
 import { Close, Search } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
-  Box, Button, CircularProgress, Divider, Drawer, IconButton,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Drawer,
+  IconButton,
   InputAdornment,
+  Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -32,7 +38,12 @@ export default function SideBar(props) {
   const handleSideBarClick = async (e) => {
     e.preventDefault();
 
-    if (checkFieldsEmpty()) refetch();
+    if (checkFieldsEmpty()) {
+      toast.error("Fill one of the fields in order to apply a filter!", {
+        toastId: "filter-error",
+      });
+      return;
+    }
 
     setLoadingButton(true);
     try {
@@ -66,10 +77,9 @@ export default function SideBar(props) {
         }}
         role="presentation"
       >
-        <Box
+        <Stack
+          direction="row"
           sx={{
-            display: "flex",
-            flexDirection: "row",
             pt: 3,
             paddingInline: 3,
           }}
@@ -83,13 +93,13 @@ export default function SideBar(props) {
           >
             <Close color="info" />
           </IconButton>
-        </Box>
+        </Stack>
         <Divider sx={{ width: "95%", m: "0 auto" }} />
         <form
           style={{ display: "flex", flexDirection: "column", height: "100%" }}
           onSubmit={handleSideBarClick}
         >
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2 }}>
+          <Stack spacing={2} sx={{ p: 2 }}>
             <TextField
               value={id}
               onChange={(e) => setId(e.target.value)}
@@ -132,15 +142,13 @@ export default function SideBar(props) {
               placeholder="Description"
               autoComplete="off"
             />
-          </Box>
-          <Box
+          </Stack>
+          <Stack
             sx={{
-              display: "flex",
-              flexDirection: "column",
               mt: "auto",
             }}
           >
-            <Divider width="95%" sx={{ m: "0 auto" }} />
+            <Divider width="95%" sx={{ m: "1em auto" }} />
             <Button
               sx={{ marginInline: 2, p: 1 }}
               color="warning"
@@ -159,7 +167,7 @@ export default function SideBar(props) {
             >
               Search
             </LoadingButton>
-          </Box>
+          </Stack>
         </form>
       </Box>
     </Drawer>

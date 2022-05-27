@@ -3,24 +3,20 @@ import {
   Box,
   Button,
   CircularProgress,
+  Container,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Stack,
-  Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios, { imagesUrl } from "../../api/axios";
+import Inner from "../../components/filmes/form/inner";
+import LoadMiddle from "../../components/filmes/loadMiddle";
 
 function EditFilmes() {
-  const [generos, setGeneros] = useState([]);
   const [titulo, setTitulo] = useState("");
   const [errTitulo, setErrTitulo] = useState(false);
   const [descricao, setDescricao] = useState("");
@@ -29,35 +25,14 @@ function EditFilmes() {
   const [errFoto, setErrFoto] = useState(false);
   const [switchFoto, setSwitchFoto] = useState(false);
   const [genero, setGenero] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
-
-  const errorList = {
-    titulo: "The title must be between 5 and 100 characters long.",
-    descricao: "The description must be between 5 and 250 characters long.",
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        //requests
-        const { data: responseGeneros } = await axios.get("/genero/list");
-        //set states
-        setGeneros(responseGeneros);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
 
   const clearErrors = () => {
     setErrDescricao(false);
     setErrFoto(false);
     setErrTitulo(false);
   };
+
   const validate = () => {
     let isFormValid = true;
 
@@ -77,16 +52,6 @@ function EditFilmes() {
     return isFormValid;
   };
 
-  const handleChange = (e) => {
-    setFoto("");
-    setSwitchFoto(e.target.checked);
-  };
-  const handleSetFoto = (e) => {
-    e.preventDefault();
-    if (e.target.files) {
-      setFoto(e.target.files[0]);
-    }
-  };
   const handleSubmit = async (e) => {
     setLoadingButton(true);
     e.preventDefault();
@@ -110,19 +75,24 @@ function EditFilmes() {
     }
     setLoadingButton(false);
   };
-  return loading ? (
-    <Box
-      sx={{
-        height: "50vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <CircularProgress />
-    </Box>
-  ) : (
+
+  const innerProps = {
+    titulo,
+    setTitulo,
+    errTitulo,
+    descricao,
+    setDescricao,
+    errDescricao,
+    foto,
+    setFoto,
+    errFoto,
+    genero,
+    setGenero,
+    switchFoto,
+    setSwitchFoto,
+  };
+
+  return (
     <Box
       sx={{
         display: "flex",
@@ -156,93 +126,15 @@ function EditFilmes() {
             component={Paper}
           >
             <Typography variant="h4">Add Movie</Typography>
-            <Divider />
-            <TextField
-              id="txtTitle"
-              label="Title"
-              variant="outlined"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              error={errTitulo}
-              helperText={errTitulo ? errorList.titulo : ""}
-              autoComplete="off"
-              autoFocus
-            />
-            <TextField
-              id="txtDescription"
-              label="Description"
-              multiline
-              variant="outlined"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              error={errDescricao}
-              helperText={errDescricao ? errorList.descricao : ""}
-              autoComplete="off"
-            />
-            <Stack direction="row" spacing={2}>
-              <TextField
-                id="foto"
-                label="Link to Photo"
-                variant="outlined"
-                value={foto}
-                onChange={(e) => setFoto(e.target.value)}
-                error={errFoto}
-                autoComplete="off"
-                sx={{
-                  flex: 1,
-                  display: switchFoto ? "none" : "",
-                }}
-              />
-              <input
-                onChange={handleSetFoto}
-                type="file"
-                accept="image/*"
-                style={{
-                  flex: 1,
-                  display: switchFoto ? "" : "none",
-                }}
-              />
-              <Stack
-                direction="row"
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                Link
-                <Switch value={switchFoto} onChange={handleChange} />
-                Foto
-              </Stack>
-            </Stack>
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <FormControl>
-                <InputLabel id="genre-select">Genre</InputLabel>
-                <Select
-                  label="Genre"
-                  value={genero}
-                  labelId="genre-select"
-                  onChange={(e) => setGenero(e.target.value)}
-                >
-                  {generos.map((row) => (
-                    <MenuItem key={row.idgenero} value={row.idgenero}>
-                      {row.descricao}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box
+
+            <Inner {...innerProps} />
+            <Stack
               sx={{
-                display: "flex",
-                width: "100%",
-                flexDirection: "column",
-                gap: 2,
                 mt: "auto",
               }}
             >
               <Divider />
-              <Box sx={{ display: "flex", gap: 1, ml: "auto" }}>
+              <Stack direction="row" spacing={2} sx={{ ml: "auto", mt: 1 }}>
                 <Button
                   component={Link}
                   to="/list"
@@ -260,8 +152,8 @@ function EditFilmes() {
                 >
                   Confirm
                 </LoadingButton>
-              </Box>
-            </Box>
+              </Stack>
+            </Stack>
           </Box>
         </form>
       </Box>

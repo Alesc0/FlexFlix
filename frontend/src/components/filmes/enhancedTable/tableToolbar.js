@@ -67,7 +67,7 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
         ) : (
           <Box sx={{ display: "flex", ml: "auto", gap: 2 }}>
-            <Tooltip title="Refresh" sx={{ ml: "auto" }}>
+            <Tooltip title="Refresh and Clear Filters" sx={{ ml: "auto" }}>
               <IconButton color="secondary" onClick={refetch}>
                 <Refresh />
               </IconButton>

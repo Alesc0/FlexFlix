@@ -1,4 +1,5 @@
 import {
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -30,7 +31,6 @@ function Inner(props) {
     errFoto,
     genero,
     setGenero,
-    handleSetFoto,
     switchFoto,
     setSwitchFoto,
   } = props;
@@ -52,6 +52,13 @@ function Inner(props) {
   const handleChange = (e) => {
     setFoto("");
     setSwitchFoto(e.target.checked);
+  };
+
+  const handleSetFoto = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+      setFoto(e.target.files[0]);
+    }
   };
 
   return (
@@ -92,15 +99,17 @@ function Inner(props) {
             display: switchFoto ? "none" : "",
           }}
         />
-        <input
-          onChange={handleSetFoto}
-          type="file"
-          accept="image/*"
-          style={{
+        <Button
+          variant="contained"
+          component="label"
+          sx={{
             flex: 1,
             display: switchFoto ? "" : "none",
           }}
-        />
+        >
+          {(foto && foto.name) || "Upload File"}
+          <input onChange={handleSetFoto} type="file" accept="image/*" hidden />
+        </Button>
         <Stack
           direction="row"
           sx={{

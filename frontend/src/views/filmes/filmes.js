@@ -1,10 +1,11 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
-import axios from "../../api/axios";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "../../api/axios";
 import FilmeSlider from "../../components/filmes/filmeSlider/filmeSlider";
 import ImgSlider from "../../components/filmes/ImgSlider/imgSlider";
+import LoadMiddle from "../../components/filmes/loadMiddle";
 import InfoModal from "../../components/filmes/modal/modal";
-import { toast } from "react-toastify";
 
 function Filmes() {
   const [movies, setMovies] = useState([]);
@@ -34,17 +35,7 @@ function Filmes() {
     fetchData();
   }, []);
   return loading ? (
-    <Box
-      sx={{
-        height: "100vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <CircularProgress />
-    </Box>
+    <LoadMiddle />
   ) : (
     <>
       <Box

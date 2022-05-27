@@ -2,20 +2,21 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Box,
   Button,
-  CircularProgress,
   Divider,
   Paper,
   Stack,
   Typography,
+  CircularProgress,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios, { imagesUrl } from "../../../api/axios";
+import LoadMiddle from "../loadMiddle";
 import Inner from "./inner";
 
 function FormFilmes(props) {
-  const { data, movie, loading } = props;
+  const { movie, loading, action, Submit } = props;
   const [switchFoto, setSwitchFoto] = useState(false);
   const [titulo, setTitulo] = useState("");
   const [genero, setGenero] = useState(1);
@@ -27,14 +28,14 @@ function FormFilmes(props) {
   const [loadingButton, setLoadingButton] = useState(false);
 
   useEffect(() => {
-    setFields(data);
-  }, [data]);
+    setFields(movie);
+  }, [movie]);
 
   const setFields = (data) => {
-    setTitulo(data.titulo);
-    setDescricao(data.descricao);
-    setFoto(data.foto);
-    setGenero(data.idgenero);
+    setTitulo(data.titulo || "");
+    setDescricao(data.descricao || "");
+    setFoto(data.foto || "");
+    setGenero(data.idgenero || "");
   };
 
   const clearErrors = () => {
@@ -74,20 +75,7 @@ function FormFilmes(props) {
 
     clearErrors();
     if (validate()) {
-      try {
-        //requests
-        const formData = new FormData();
-        formData.append(typeof foto === "string" ? "foto" : "file", foto);
-        formData.append("descricao", descricao.trim());
-        formData.append("titulo", titulo.trim());
-        formData.append("idgenero", genero);
-        const data = await axios.post("/filme/create", formData);
-        toast.success(data.data);
-      } catch (error) {
-        for (const [key, value] of Object.entries(error.response.data)) {
-          toast.error(value, { toastId: key });
-        }
-      }
+      Submit();
     }
     setLoadingButton(false);
   };
@@ -108,18 +96,9 @@ function FormFilmes(props) {
     switchFoto,
     setSwitchFoto,
   ];
+
   return loading ? (
-    <Box
-      sx={{
-        height: "50vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <CircularProgress />
-    </Box>
+    <LoadMiddle />
   ) : (
     <Box
       sx={{
